@@ -1,0 +1,715 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>معلمان برتر</title>
+
+  <!-- بوت استرپ CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
+  <!-- فونت فارسی Vazirmatn -->
+  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn&display=swap" rel="stylesheet">
+
+  <!-- بوت استرپ JS و وابستگی‌ها -->
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"></script>
+
+  <style>
+    body {
+      font-family: 'Vazirmatn', sans-serif;
+      background: #121212;
+      color: #fff;
+      padding: 2rem;
+      margin: 1rem;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      font-weight: bold;
+      color: #f9a826;
+    }
+
+    .podium {
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+      gap: 2rem;
+      margin-bottom: 3rem;
+    }
+
+    .podium .position {
+      background-color: #1e1e1e;
+      border-radius: 1.5rem;
+      padding: 2rem;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+      transition: transform 0.3s ease;
+      position: relative;
+    }
+
+    .podium .position:hover {
+      transform: translateY(-10px);
+    }
+
+    .first {
+      height: 250px;
+      background: linear-gradient(135deg, #f9a826, #f18a00);
+    }
+
+    .second {
+      height: 200px;
+      background: linear-gradient(135deg, #6c757d, #495057);
+    }
+
+    .third {
+      height: 180px;
+      background: linear-gradient(135deg, #b76e31, #ffb84d);
+    }
+
+    .teacher-name {
+      font-size: 1.4rem;
+      font-weight: bold;
+      margin-top: 1.5rem;
+    }
+
+    .vote-count {
+      font-size: 1rem;
+      color: #ccc;
+    }
+
+    .teacher-list {
+      background-color: #222;
+      border-radius: 1.5rem;
+      padding: 1.5rem;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+
+    .table {
+      background-color: #333;
+      border-radius: 1rem;
+    }
+
+    .table th, .table td {
+      color: #fff;
+    }
+
+    .vote-btn {
+      background: linear-gradient(135deg, #007bff, #00c6ff);
+      color: white;
+      border: none;
+      padding: 1rem 3rem;
+      border-radius: 2rem;
+      font-size: 1.2rem;
+      font-weight: bold;
+      transition: background 0.3s ease;
+      margin-top: 2rem;
+    }
+
+    .vote-btn:hover {
+      background: linear-gradient(135deg, #0056b3, #0099cc);
+    }
+
+    .medal-icon {
+      font-size: 3rem;
+      position: absolute;
+      top: -40px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 3rem;
+      font-size: 1rem;
+      color: #888;
+    }
+
+    .teacher-list .table {
+      background-color: #181818;  /* پس‌زمینه تیره‌تر */
+      color: #fff;  /* متن روشن */
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+      transition: transform 0.3s ease;
+    }
+
+    /* هر ردیف فرد کمی تیره‌تر از ردیف‌های زوج */
+    .teacher-list .table-striped tbody tr:nth-child(odd) {
+      background-color: #1d1d1d;  /* ردیف‌های فرد */
+    }
+
+    .teacher-list .table-striped tbody tr:nth-child(even) {
+      background-color: #454545;  /* ردیف‌های زوج */
+    }
+
+    /* وقتی روی ردیف هاور می‌شود، رنگ روشن‌تر می‌شود */
+    .teacher-list .table-hover tbody tr:hover {
+      background-color: #787878 !important;  /* رنگ روشن‌تر برای هاور */
+    }
+
+    /* مرزهای سلول‌ها */
+    .table-bordered th, .table-bordered td {
+      border: 1px solid #444;  /* مرز تیره */
+    }
+
+    .table-dark th {
+      background-color: #1c1c1c;  /* پس‌زمینه تیره هدر */
+      color: #fff;
+    }
+
+    .table th, .table td {
+      font-size: 1.1rem;
+      font-weight: 500;
+      padding: 1rem;
+    }
+
+    .table th {
+      background-color: #2c2c2c;  /* هدر با پس‌زمینه تیره */
+      color: #fff;
+    }
+
+    .table td {
+      background-color: #333;  /* پس‌زمینه سلول‌ها */
+    }
+    td:hover{
+      background-color: rgb(124, 124, 124);
+    }
+    /* پایه‌های طراحی */
+/* پایه‌های طراحی */
+.podium {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  gap: 40px;
+  margin-top: 50px;
+  position: relative;
+}
+
+/* طراحی موقعیت‌ها */
+.position {
+  position: relative;
+  text-align: center;
+  background-color: #333;
+  padding: 40px 20px;
+  border-radius: 15px;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6);
+  transition: transform 0.4s ease, box-shadow 0.4s ease, opacity 0.3s ease-in-out;
+  overflow: hidden;
+  opacity: 0.95;
+  z-index: 1;
+  transform: translateY(20px);
+}
+
+/* ایجاد سایه‌های عمق‌دار */
+.position:hover {
+  transform: translateY(-20px) scale(1.05);
+  box-shadow: 0 25px 55px rgba(0, 0, 0, 0.7);
+  opacity: 1;
+}
+
+/* انیمیشن‌های مدال‌های قهرمانی */
+.position.first {
+  background: linear-gradient(135deg, #ffd700, #ffcc00);
+  animation: shine-gold 2s infinite alternate;
+}
+
+.position.second {
+  background: linear-gradient(135deg, #c0c0c0, #a8a8a8);
+  animation: shine-silver 2s infinite alternate;
+}
+
+.position.third {
+  background: linear-gradient(135deg, #cd7f32, #a97c53);
+  animation: shine-bronze 2s infinite alternate;
+}
+
+/* طراحی مدال‌ها */
+.medal-icon {
+  font-size: 5rem;
+  margin-bottom: 15px;
+  animation: pulse 1.5s ease-in-out infinite;
+  text-shadow: 0 3px 8px rgba(0, 0, 0, 0.4);
+}
+
+/* اسامی و تعداد رأی */
+.teacher-name {
+  font-size: 1.6rem;
+  font-weight: bold;
+  color: #fff;
+  margin-bottom: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.vote-count {
+  font-size: 1.2rem;
+  color: #ddd;
+  text-shadow: 0 1px 5px rgba(0, 0, 0, 0.4);
+}
+
+/* انیمیشن برای درخشش */
+@keyframes shine-gold {
+  0% {
+    background: linear-gradient(135deg, #ffd700, #ffcc00);
+  }
+  100% {
+    background: linear-gradient(135deg, #f1c27d, #ffd700);
+  }
+}
+
+@keyframes shine-silver {
+  0% {
+    background: linear-gradient(135deg, #c0c0c0, #a8a8a8);
+  }
+  100% {
+    background: linear-gradient(135deg, #d8d8d8, #c0c0c0);
+  }
+}
+
+@keyframes shine-bronze {
+  0% {
+    background: linear-gradient(135deg, #cd7f32, #a97c53);
+  }
+  100% {
+    background: linear-gradient(135deg, #c6895b, #b37f3f);
+  }
+}
+
+/* انیمیشن پالس برای مدال‌ها */
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* افزودن سایه‌های پشتی به موقعیت‌ها */
+.position.first::after,
+.position.second::after,
+.position.third::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 15px;
+  z-index: -1;
+}
+
+
+
+/* افکت چرخش مدال‌ها */
+@keyframes rotate-medal {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+.title {
+  font-size: 4rem;
+  font-weight: bold;
+  background: linear-gradient(135deg, #ff6600, #ffcc00, #ff3399);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-transform: uppercase;
+  letter-spacing: 5px;
+  position: relative;
+  animation: glow-text 3s ease-in-out infinite;
+}
+
+@keyframes glow-text {
+  0% {
+    text-shadow: 0 0 20px rgba(255, 102, 0, 0.8), 0 0 30px rgba(255, 102, 0, 0.6);
+  }
+  50% {
+    text-shadow: 0 0 30px rgba(255, 204, 0, 1), 0 0 40px rgba(255, 204, 0, 0.8);
+  }
+  100% {
+    text-shadow: 0 0 20px rgba(255, 102, 0, 0.8), 0 0 30px rgba(255, 102, 0, 0.6);
+  }
+}
+
+@keyframes spin-icon {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+/* دکمه رأی */
+.btn-vote {
+  background-color: #4caf50;
+  color: white;
+  padding: 12px 25px;
+  border: none;
+  border-radius: 10px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.btn-vote:hover {
+  background-color: #45a049;
+}
+
+/* مودال پس‌زمینه */
+.modal-vote {
+  display: none;
+  position: fixed;
+  z-index: 999;
+  padding-top: 80px;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.8);
+  animation: fadeIn 0.4s ease-out;
+}
+
+/* محتوا */
+.modal-content {
+  background-color: #1f1f1f;
+  margin: auto;
+  padding: 30px;
+  border-radius: 15px;
+  width: 90%;
+  max-width: 500px;
+  color: white;
+  animation: slideUp 0.4s ease;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.9);
+}
+
+/* انیمیشن‌ها */
+@keyframes fadeIn {
+  from {opacity: 0}
+  to {opacity: 1}
+}
+
+@keyframes slideUp {
+  from {transform: translateY(30px); opacity: 0}
+  to {transform: translateY(0); opacity: 1}
+}
+
+/* دکمه بستن */
+.modal-content .close {
+  color: #bbb;
+  float: left;
+  font-size: 28px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.modal-content .close:hover {
+  color: white;
+}
+
+/* فرم */
+#voteForm {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+#voteForm label {
+  font-weight: bold;
+}
+
+#voteForm select {
+  padding: 10px;
+  border-radius: 8px;
+  background-color: #2a2a2a;
+  color: white;
+  border: 1px solid #444;
+}
+
+#voteForm button[type="submit"] {
+  background-color: #2196f3;
+  color: white;
+  border: none;
+  padding: 10px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+#voteForm button[type="submit"]:hover {
+  background-color: #1976d2;
+}
+
+/* واکنش‌گرا */
+@media (max-width: 576px) {
+  .modal-content {
+    width: 95%;
+    padding: 20px;
+  }
+
+  .btn-vote {
+    width: 100%;
+    font-size: 1rem;
+  }
+}
+/* دکمه اسکرول به پایین */
+.scroll-down-btn {
+  position: fixed;
+  left: 35px;
+  bottom: 20px;
+  background-color: red;
+  border-radius: 50%;
+  padding: 10px;
+  color: white;
+  text-decoration: none;
+  z-index: 1000;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  transition: background-color 0.3s ease;
+}
+.scroll-down-btn:hover {
+  background-color: darkred;
+}
+
+/* دکمه ورود/خروج */
+.auth-btn-container {
+  position: fixed;
+  top: 15px;
+  right: 15px;
+  z-index: 1000;
+}
+
+.login-btn,
+.logout-btn {
+  background-color: #002aff;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 6px;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s ease;
+}
+
+.login-btn:hover,
+.logout-btn:hover {
+  background-color: #001fbd;
+}
+
+/* تیتر صفحه */
+.title {
+  font-size: 2.2rem;
+  font-weight: bold;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+/* واکنش‌گرایی برای موبایل */
+@media (max-width: 576px) {
+  .scroll-down-btn {
+    left: 15px;
+    padding: 8px;
+  }
+
+  .auth-btn-container {
+    top: 10px;
+    right: 10px;
+  }
+
+  .login-btn,
+  .logout-btn {
+    padding: 6px 12px;
+    font-size: 13px;
+  }
+
+  .title {
+    font-size: 1.6rem;
+  }
+}
+
+
+</style>
+</head>
+<body>
+
+  <div class="container text-center">
+    <!-- دکمه اسکرول به پایین -->
+    <a href="#ra" class="scroll-down-btn" style="margin-bottom: 599px;">
+      <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#fff">
+        <path d="M480-200 240-440l56-56 184 183 184-183 56 56-240 240Zm0-240L240-680l56-56 184 183 184-183 56 56-240 240Z"/>
+      </svg>
+    </a>
+
+    <!-- ورود/خروج -->
+    <div class="auth-btn-container">
+      {% if not user.is_authenticated %}
+        <a href="{% url 'login' %}" class="login-btn">ورود</a>
+      {% else %}
+        <form method="post">
+          {% csrf_token %}
+          <button type="submit" name="logout" value="1" class="logout-btn">خروج</button>
+        </form>
+      {% endif %}
+    </div>
+
+    <!-- تیتر -->
+    <h1 class="mb-5 text-center text-white title">معلمان برتر</h1>
+
+
+
+    <!-- سکوی قهرمانی -->
+    <div class="podium row text-center">
+      {% if top_teachers|length > 2 %}
+        <div class="position third col-12 col-md-3 order-md-1 order-3">
+          <div class="medal-icon">🥉</div>
+          <div class="teacher-name">{{ top_teachers.2.name }}</div>
+          <div class="vote-count">{{ top_teachers.2.vote }} رأی</div>
+        </div>
+      {% endif %}
+
+      {% if top_teachers|length > 0 %}
+        <div class="position first col-12 col-md-3 order-md-2 order-1">
+          <div class="medal-icon">🥇</div>
+          <div class="teacher-name">{{ top_teachers.0.name }}</div>
+          <div class="vote-count">{{ top_teachers.0.vote }} رأی</div>
+        </div>
+      {% endif %}
+
+      {% if top_teachers|length > 1 %}
+        <div class="position second col-12 col-md-3 order-md-3 order-2">
+          <div class="medal-icon">🥈</div>
+          <div class="teacher-name">{{ top_teachers.1.name }}</div>
+          <div class="vote-count">{{ top_teachers.1.vote }} رأی</div>
+        </div>
+      {% endif %}
+    </div>
+
+
+
+
+
+    <!-- لیست کامل معلمان -->
+    <div class="teacher-list table-responsive" style="margin-top: 80px;">
+      <table class="table table-hover table-striped table-bordered text-center align-middle">
+        <thead class="table-dark">
+          <tr>
+            <th>#</th>
+            <th>نام معلم</th>
+            <th>تعداد رأی</th>
+            <th>عملیات</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for teacher in all_teachers %}
+          <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>{{ teacher.name }}</td>
+            <td>{{ teacher.vote }}</td>
+            <td>
+              {% if teacher.id in voted_teacher_ids %}
+              <form method="post" style="display:inline;">
+                {% csrf_token %}
+                <button type="submit" name="delete_vote" value="{{ teacher.id }}" class="btn btn-sm btn-danger">
+                  حذف رأی
+                </button>
+              </form>
+              {% else %}
+              -
+              {% endif %}
+            </td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="4">هیچ معلمی ثبت نشده است.</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+
+
+
+
+
+    <button id="ra" class="vote-btn" style="margin-top: 4rem;" onclick="openVoteModal()">🗳️ رأی دادن به معلم</button>
+
+    <div id="voteModal" class="modal-vote" style="display:none;">
+      <div class="modal-content">
+        <span class="close" onclick="closeVoteModal()">&times;</span>
+        <form id="voteForm" method="post" action="{% url 'home' %}">
+          {% csrf_token %}
+          <label for="teacherSelect">انتخاب معلم:</label>
+          <select id="teacherSelect" name="teachers" multiple required>
+            {% for teacher in teachers %}
+              <option value="{{ teacher.id }}">{{ teacher.name }}</option>
+            {% endfor %}
+          </select>
+          <p><b>نکته:</b> شما می‌توانید حداکثر سه رأی ثبت کنید ⚠️</p>
+          <p>شما تا کنون <b>{{ votes_count }}</b> رأی داده‌اید. باقی‌مانده: <b>{{ votes_left }}</b></p>
+          <button class="vote-btn-hop" type="submit">ثبت رأی</button>
+        </form>
+      </div>
+    </div>
+
+
+
+
+    <footer>
+      <p>© 2025 سامانه آموزش | طراحی شده با ❤️ و HTML, CSS, Bootstrap</p>
+    </footer>
+  </div>
+  <script>
+    function openVoteModal() {
+      document.getElementById("voteModal").style.display = "block";
+    }
+
+    function closeVoteModal() {
+      document.getElementById("voteModal").style.display = "none";
+    }
+
+    // بستن مودال با کلیک بیرون از آن
+    window.onclick = function(event) {
+      const modal = document.getElementById("voteModal");
+      if (event.target == modal) {
+        modal.style.display = "none";
+      }
+    }
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+<script>
+  document.querySelectorAll('.vote-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      // اجرای فشفشه
+      confetti({
+        particleCount: 500,
+        spread: 200,
+        origin: { y: 0.1 },
+        colors: ['#ffcc00', '#ff6699', '#00ccff', '#66ff66'],
+      });
+
+      // همچنین می‌توان یک پیام تبریک هم نمایش داد (اختیاری)
+      Toastify({
+        text: "رأی شما ثبت شد! 🎉",
+        duration: 3000,
+        gravity: "top",
+        position: 'center',
+        style: {
+          background: "linear-gradient(to right, #00b09b, #96c93d)",
+          fontFamily: "Vazirmatn",
+        },
+      }).showToast();
+    });
+  });
+</script>
+
+</body>
+</html>
