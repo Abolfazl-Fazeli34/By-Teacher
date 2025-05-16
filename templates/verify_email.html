@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <!-- فونت Vazirmatn -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;600&display=swap" rel="stylesheet">
 
   <style>
@@ -116,6 +117,23 @@
     <button type="submit">تأیید ایمیل</button>
   </form>
 </div>
-
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+{% if messages %}
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    {% for message in messages %}
+      Toastify({
+        text: "{{ message }}",
+        duration: 3000,
+        close: true,
+        gravity: "top", // بالا یا پایین صفحه
+        position: "right", // راست یا چپ صفحه
+        backgroundColor: "{% if message.tags == 'success' %} #4CAF50 {% elif message.tags == 'error' %} #f44336 {% else %} #333 {% endif %}",
+        stopOnFocus: true,
+      }).showToast();
+    {% endfor %}
+  });
+</script>
+{% endif %}
 </body>
 </html>

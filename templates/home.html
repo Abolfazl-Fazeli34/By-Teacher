@@ -10,10 +10,15 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
   <!-- فونت فارسی Vazirmatn -->
   <link href="https://fonts.googleapis.com/css2?family=Vazirmatn&display=swap" rel="stylesheet">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
 
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+
+  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
   <!-- بوت استرپ JS و وابستگی‌ها -->
-  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"></script>
+
 
   <style>
     body {
@@ -464,8 +469,8 @@
 /* دکمه اسکرول به پایین */
 .scroll-down-btn {
   position: fixed;
-  left: 35px;
-  bottom: 20px;
+  left: 20px;
+  top: 20px;
   background-color: red;
   border-radius: 50%;
   padding: 10px;
@@ -535,6 +540,225 @@
   }
 }
 
+    @media (max-width: 768px) {
+  .podium {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .position {
+    width: 100%;
+    max-width: 300px;
+    margin-bottom: 2rem;
+  }
+
+  .title {
+    font-size: 2rem;
+    letter-spacing: 2px;
+    text-align: center;
+  }
+
+  .vote-btn {
+    width: 100%;
+    padding: 0.8rem 1.5rem;
+    font-size: 1rem;
+  }
+
+  .table th, .table td {
+    font-size: 0.9rem;
+    padding: 0.5rem;
+  }
+
+  body {
+    padding: 1rem;
+    margin: 0.5rem;
+  }
+}
+<style>
+.modal-overlay {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  right: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  backdrop-filter: blur(6px);
+  background-color: rgba(0, 0, 0, 0.4);
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.modal-content {
+  background: #fff;
+  margin: 8% auto;
+  padding: 30px;
+  border-radius: 16px;
+  max-width: 600px;
+  position: relative;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  text-align: right;
+  direction: rtl;
+  font-family: "Vazirmatn", sans-serif;
+}
+
+.close-btn {
+  position: absolute;
+  top: 12px;
+  left: 20px;
+  font-size: 28px;
+  cursor: pointer;
+  color: #666;
+  transition: color 0.3s;
+}
+.close-btn:hover {
+  color: #e74c3c;
+}
+
+.open-conditions-btn {
+  padding: 10px 18px;
+  font-size: 16px;
+  border: none;
+  border-radius: 10px;
+  background-color: #2f80ed;
+  color: #fff;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+.open-conditions-btn:hover {
+  background-color: #1c60bd;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.custom-dark-modal {
+  background: #111;
+  border: 1px solid #2a2a2a;
+  box-shadow: 0 0 40px rgba(255, 255, 255, 0.05);
+  animation: fadeInUp 0.5s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+/* پس‌زمینه نیمه شفاف بسیار تیره */
+  #voteModal {
+    display: none; /* پیش‌فرض مخفی */
+    position: fixed;
+    z-index: 1050;
+    left: 0; top: 0;
+    width: 100%; height: 100%;
+    background: rgba(10, 10, 10, 0.9);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Vazirmatn', sans-serif;
+  }
+
+  /* محتوای مودال - زمینه مشکی مات با سایه */
+  #voteModal .modal-content {
+    background: linear-gradient(145deg, #0a0a0a, #1a1a1a);
+    border-radius: 20px;
+    box-shadow: 0 0 30px 3px rgba(255,255,255,0.05);
+    padding: 30px 40px;
+    width: 400px;
+    max-width: 90%;
+    color: #eee;
+    position: relative;
+    border: 1px solid #333;
+  }
+
+  /* دکمه بستن بزرگ و سفید */
+  #voteModal .close {
+    position: absolute;
+    top: 15px; right: 20px;
+    font-size: 28px;
+    font-weight: bold;
+    color: #eee;
+    cursor: pointer;
+    transition: color 0.3s ease;
+    user-select: none;
+  }
+  #voteModal .close:hover {
+    color: #ff4c60;
+  }
+
+  /* برچسب و نوشته‌ها */
+  #voteModal label {
+    display: block;
+    margin-bottom: 12px;
+    font-size: 17px;
+    font-weight: 600;
+    color: #f0f0f0;
+    text-align: right;
+  }
+
+  /* سِلکت چند انتخابی */
+  #voteModal select[multiple] {
+    width: 100%;
+    height: 110px;
+    background: #121212;
+    border: 1.5px solid #444;
+    border-radius: 12px;
+    color: #ddd;
+    padding: 10px;
+    font-size: 15px;
+    direction: rtl;
+    outline: none;
+    transition: border-color 0.3s ease;
+  }
+  #voteModal select[multiple]:focus {
+    border-color: #ff4c60;
+    box-shadow: 0 0 8px #ff4c60;
+    background: #1a1a1a;
+  }
+
+  /* پاراگراف‌های نکته و وضعیت رأی‌ها */
+  #voteModal p {
+    font-size: 14px;
+    color: #bbb;
+    margin: 15px 0;
+    text-align: right;
+  }
+  #voteModal p b {
+    color: #ff4c60;
+  }
+
+  /* دکمه ثبت رأی */
+  #voteModal .vote-btn-hop {
+    background: linear-gradient(45deg, #ff3a5c, #ff6a88);
+    border: none;
+    border-radius: 30px;
+    padding: 12px 30px;
+    color: #fff;
+    font-weight: 700;
+    font-size: 16px;
+    width: 100%;
+    cursor: pointer;
+    box-shadow: 0 6px 12px rgba(255, 58, 92, 0.5);
+    transition: all 0.3s ease;
+    user-select: none;
+  }
+  #voteModal .vote-btn-hop:hover {
+    box-shadow: 0 8px 20px rgba(255, 58, 92, 0.8);
+    transform: translateY(-3px);
+    background: linear-gradient(45deg, #ff1c3d, #ff4c60);
+  }
+  #voteModal .vote-btn-hop:active {
+    transform: translateY(0);
+    box-shadow: 0 4px 10px rgba(255, 58, 92, 0.6);
+  }
 
 </style>
 </head>
@@ -542,7 +766,7 @@
 
   <div class="container text-center">
     <!-- دکمه اسکرول به پایین -->
-    <a href="#ra" class="scroll-down-btn" style="margin-bottom: 599px;">
+    <a href="#ra" class="scroll-down-btn" >
       <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#fff">
         <path d="M480-200 240-440l56-56 184 183 184-183 56 56-240 240Zm0-240L240-680l56-56 184 183 184-183 56 56-240 240Z"/>
       </svg>
@@ -561,7 +785,7 @@
     </div>
 
     <!-- تیتر -->
-    <h1 class="mb-5 text-center text-white title">معلمان برتر</h1>
+    <h1 style="font-size: 5rem" class="mb-5 text-center text-white title">معلمان برتر</h1>
 
 
 
@@ -642,7 +866,7 @@
 
     <button id="ra" class="vote-btn" style="margin-top: 4rem;" onclick="openVoteModal()">🗳️ رأی دادن به معلم</button>
 
-    <div id="voteModal" class="modal-vote" style="display:none;">
+    <div id="voteModal" class="modal-vote" style="display:none;" dir="rtl">
       <div class="modal-content">
         <span class="close" onclick="closeVoteModal()">&times;</span>
         <form id="voteForm" method="post" action="{% url 'home' %}">
@@ -659,12 +883,59 @@
         </form>
       </div>
     </div>
+      <br>
+      <br>
+    <!-- دکمه برای باز کردن مودال -->
+    <button type="button" class="btn btn-primary rounded-pill px-4 py-2 shadow" data-bs-toggle="modal" data-bs-target="#conditionsModal">
+      📜 شرایط رأی‌دهی
+    </button>
+
+    <!-- مودال شرایط رأی‌دهی راست‌چین کامل -->
+    <div class="modal fade" id="conditionsModal" tabindex="-1" aria-labelledby="conditionsModalLabel" aria-hidden="true" dir="rtl">
+      <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content rounded-4 border-0 bg-dark text-white shadow-lg custom-dark-modal">
+
+          <div class="modal-header border-0 rounded-top-4" style="background: linear-gradient(90deg, #222, #111);">
+            <h5 class="modal-title fw-bold" id="conditionsModalLabel" style="text-align: right;">
+              🧾 شرایط رأی‌دهی به معلمان برتر
+            </h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="بستن"></button>
+          </div>
+
+          <div class="modal-body px-4 py-3" style="font-family: 'Vazirmatn', sans-serif; max-height: 80vh; overflow-y: auto; text-align: right;">
+            <p class="mb-3">
+              این بخش با هدف <strong class="text-warning">ارزیابی محبوبیت معلمان</strong> از نگاه دانش‌آموزان طراحی شده است.
+              <br>تمامی آرا در فضایی محترمانه و سازنده جمع‌آوری می‌شوند.
+            </p>
+
+            <ul class="list-group list-group-flush mb-3" style="text-align: right;">
+              <li class="list-group-item bg-transparent text-light border-0" style="text-align: right;"><i class="bi bi-shield-check text-success ms-2"></i> این رأی‌گیری <strong>هیچ‌گونه جنبه توهین‌آمیز یا تمسخرآمیز</strong> ندارد.</li>
+              <li class="list-group-item bg-transparent text-light border-0" style="text-align: right;"><i class="bi bi-star-fill text-warning ms-2"></i> هدف، <strong>تشویق معلمان پرتلاش</strong> و الهام‌بخش است.</li>
+              <li class="list-group-item bg-transparent text-light border-0" style="text-align: right;"><i class="bi bi-123 text-info ms-2"></i> هر کاربر فقط می‌تواند <strong>حداکثر ۳ رأی</strong> ثبت کند.</li>
+              <li class="list-group-item bg-transparent text-light border-0" style="text-align: right;"><i class="bi bi-graph-up-arrow text-primary ms-2"></i> این نتایج صرفاً <strong>آماری و غیررسمی</strong> هستند.</li>
+            </ul>
+
+            <div class="text-white text-light small" style="text-align: right;color: white">
+              🌟 با رأی‌دادن آگاهانه، فضای انگیزشی برای معلمان خلق کنیم.
+            </div>
+          </div>
+
+          <div class="modal-footer border-0 justify-content-between px-4 py-3">
+            <span class="text-secondary small">سامانه رأی‌دهی معلمان - نسخه آزمایشی</span>
+            <button type="button" class="btn btn-outline-light rounded-pill px-4" data-bs-dismiss="modal">بستن</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+
 
 
 
 
     <footer>
-      <p>© 2025 سامانه آموزش | طراحی شده با ❤️ و HTML, CSS, Bootstrap</p>
+      <p>© 2025 سامانه آموزش | طراحی شده با ❤️ و django , HTML django, CSS , Bootstrap</p>
     </footer>
   </div>
   <script>
@@ -685,6 +956,10 @@
     }
   </script>
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 <script>
   document.querySelectorAll('.vote-btn').forEach(btn => {
     btn.addEventListener('click', () => {
@@ -693,7 +968,7 @@
         particleCount: 500,
         spread: 200,
         origin: { y: 0.1 },
-        colors: ['#ffcc00', '#ff6699', '#00ccff', '#66ff66'],
+        colors: ['#fffa00', '#ff0056', '#00ccff', '#00ff00'],
       });
 
       // همچنین می‌توان یک پیام تبریک هم نمایش داد (اختیاری)
@@ -710,6 +985,24 @@
     });
   });
 </script>
+
+{% if messages %}
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    {% for message in messages %}
+      Toastify({
+        text: "{{ message }}",
+        duration: 3000,
+        close: true,
+        gravity: "top", // بالا یا پایین صفحه
+        position: "right", // راست یا چپ صفحه
+        backgroundColor: "{% if message.tags == 'success' %} #4CAF50 {% elif message.tags == 'error' %} #f44336 {% else %} #333 {% endif %}",
+        stopOnFocus: true,
+      }).showToast();
+    {% endfor %}
+  });
+</script>
+{% endif %}
 
 </body>
 </html>
