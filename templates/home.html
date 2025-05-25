@@ -762,152 +762,201 @@
 
 </style>
 <head>
-  <style>
-    .hidden { display: none; }
-    #countdown { font-size: 2rem; color: #ff0; margin-bottom: 1rem; }
+     <style>
+
+/* استایل تایمر کلی */
+#countdown {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1.5rem;
+  font-family: 'Vazirmatn', sans-serif;
+  font-weight: 700;
+  font-size: 3rem;
+  color: #f9a826; /* رنگ زرد طلایی هماهنگ با هدرها */
+  background-color: #1e1e1e;
+  padding: 1rem 2rem;
+  border-radius: 1.5rem;
+  box-shadow: 0 6px 20px rgba(249, 168, 38, 0.5);
+  user-select: none;
+  width: max-content;
+  margin: 2rem auto;
+}
+
+
   </style>
 </head>
 <body>
+  <div class="container text-center">
+    <!-- تایمر -->
+    <div id="countdownContainer">
+      <div id="countdown">00:00:00</div>
+    </div>
+    <br>
+    <br>
 
-    <div class="container text-center">
-      <!-- تایمر -->
-      <div id="countdown" class="mb-4"></div>
+    <!-- دکمه اسکرول -->
+    <a href="#ra" class="scroll-down-btn"></a>
 
-      <!-- دکمه اسکرول -->
-      <a href="#ra" class="scroll-down-btn">
-        <!-- ایکون اسکرول -->
-      </a>
+    <!-- ورود/خروج -->
+    <div class="auth-btn-container">
+      {% if not user.is_authenticated %}
+        <a href="{% url 'login' %}" class="login-btn">ورود</a>
+      {% else %}
+        <form method="post">
+          {% csrf_token %}
+          <button type="submit" name="logout" value="1" class="logout-btn">خروج</button>
+        </form>
+      {% endif %}
+    </div>
 
-      <!-- ورود/خروج -->
-      <div class="auth-btn-container">
-        {% if not user.is_authenticated %}
-          <a href="{% url 'login' %}" class="login-btn">ورود</a>
-        {% else %}
-          <form method="post">
-            {% csrf_token %}
-            <button type="submit" name="logout" value="1" class="logout-btn">خروج</button>
-          </form>
-        {% endif %}
-      </div>
+    <!-- تیتر -->
+    <h1 style="font-size: 5rem" class="mb-5 text-center text-white title">معلمان برتر</h1>
 
-      <!-- تیتر -->
-      <h1 style="font-size: 5rem" class="mb-5 text-center text-white title">معلمان برتر</h1>
-
-      <!-- سکوی قهرمانی -->
-      <div class="podium row text-center">
-        {% if top_teachers|length > 2 %}
-          <div class="position third col-12 col-md-3 order-md-1 order-3">
-            <div class="medal-icon">🥉</div>
-            <div class="teacher-name">{{ top_teachers.2.name }}</div>
-            <div class="vote-count hidden" id="vote3">{{ top_teachers.2.vote }} رأی</div>
-          </div>
-        {% endif %}
-        {% if top_teachers|length > 0 %}
-          <div class="position first col-12 col-md-3 order-md-2 order-1">
-            <div class="medal-icon">🥇</div>
-            <div class="teacher-name">{{ top_teachers.0.name }}</div>
-            <div class="vote-count hidden" id="vote1">{{ top_teachers.0.vote }} رأی</div>
-          </div>
-        {% endif %}
-        {% if top_teachers|length > 1 %}
-          <div class="position second col-12 col-md-3 order-md-3 order-2">
-            <div class="medal-icon">🥈</div>
-            <div class="teacher-name">{{ top_teachers.1.name }}</div>
-            <div class="vote-count hidden" id="vote2">{{ top_teachers.1.vote }} رأی</div>
-          </div>
-        {% endif %}
-      </div>
-
-      <!-- جدول رتبه بندی -->
-      <div class="teacher-list table-responsive hidden" id="teacherTable" style="margin-top: 80px;">
-        <table class="table table-hover table-striped table-bordered text-center align-middle">
-          <thead class="table-dark">
-            <tr>
-              <th>#</th>
-              <th>نام معلم</th>
-              <th>تعداد رأی</th>
-              <th>عملیات</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for teacher in all_teachers %}
-            <tr>
-              <td>{{ forloop.counter }}</td>
-              <td>{{ teacher.name }}</td>
-              <td>{{ teacher.vote }}</td>
-              <td>
-                {% if teacher.id in voted_teacher_ids %}
-                <form method="post" style="display:inline;">
-                  {% csrf_token %}
-                  <button type="submit" name="delete_vote" value="{{ teacher.id }}" class="btn btn-sm btn-danger">حذف رأی</button>
-                </form>
-                {% else %} - {% endif %}
-              </td>
-            </tr>
-            {% empty %}
-            <tr><td colspan="4">هیچ معلمی ثبت نشده است.</td></tr>
-            {% endfor %}
-          </tbody>
-        </table>
-      </div>
-
-      <!-- دکمه رأی دادن -->
-      <button id="ra" class="vote-btn" style="margin-top: 4rem;" onclick="openVoteModal()">🗳️ رأی دادن به معلم</button>
-
-      <div id="voteModal" class="modal-vote" style="display:none;" dir="rtl">
-        <div class="modal-content">
-          <span class="close" onclick="closeVoteModal()">&times;</span>
-          <form id="voteForm" method="post" action="{% url 'home' %}">
-            {% csrf_token %}
-            <label for="teacherSelect">انتخاب معلم:</label>
-            <select id="teacherSelect" name="teachers" multiple required>
-              {% for teacher in teachers %}
-                <option value="{{ teacher.id }}">{{ teacher.name }}</option>
-              {% endfor %}
-            </select>
-            <p><b>نکته:</b> حداکثر سه رأی</p>
-            <p>شما تا کنون <b>{{ votes_count }}</b> رأی داده‌اید. باقی‌مانده: <b>{{ votes_left }}</b></p>
-            <button class="vote-btn-hop" type="submit">ثبت رأی</button>
-          </form>
+    <!-- سکوی قهرمانی -->
+    <div class="podium row text-center">
+      {% if top_teachers|length > 2 %}
+        <div class="position third col-12 col-md-3 order-md-1 order-3">
+          <div class="medal-icon">🥉</div>
+          <div class="teacher-name">{{ top_teachers.2.name }}</div>
+          <div class="vote-count hidden" id="vote3">{{ top_teachers.2.vote }} رأی</div>
         </div>
+      {% endif %}
+      {% if top_teachers|length > 0 %}
+        <div class="position first col-12 col-md-3 order-md-2 order-1">
+          <div class="medal-icon">🥇</div>
+          <div class="teacher-name">{{ top_teachers.0.name }}</div>
+          <div class="vote-count hidden" id="vote1">{{ top_teachers.0.vote }} رأی</div>
+        </div>
+      {% endif %}
+      {% if top_teachers|length > 1 %}
+        <div class="position second col-12 col-md-3 order-md-3 order-2">
+          <div class="medal-icon">🥈</div>
+          <div class="teacher-name">{{ top_teachers.1.name }}</div>
+          <div class="vote-count hidden" id="vote2">{{ top_teachers.1.vote }} رأی</div>
+        </div>
+      {% endif %}
+    </div>
+
+    <!-- جدول رتبه بندی -->
+    <div class="teacher-list table-responsive hidden" id="teacherTable" style="margin-top: 80px;">
+      <table class="table table-hover table-striped table-bordered text-center align-middle">
+        <thead class="table-dark">
+          <tr>
+            <th>#</th>
+            <th>نام معلم</th>
+            <th>تعداد رأی</th>
+            <th>عملیات</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for teacher in all_teachers %}
+          <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>{{ teacher.name }}</td>
+            <td>{{ teacher.vote }}</td>
+            <td>
+              {% if teacher.id in voted_teacher_ids %}
+              <form method="post" style="display:inline;">
+                {% csrf_token %}
+                <button type="submit" name="delete_vote" value="{{ teacher.id }}" class="btn btn-sm btn-danger">حذف رأی</button>
+              </form>
+              {% else %} - {% endif %}
+            </td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="4">هیچ معلمی ثبت نشده است.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+<!-- جدول معلم‌هایی که کاربر بهشون رأی داده -->
+<div class="teacher-list table-responsive" id="userVotedTeachersTable" style="margin-top: 80px;">
+  <table class="table table-hover table-striped table-bordered text-center align-middle">
+    <thead class="table-dark">
+      <tr>
+        <th>نام معلم</th>
+        <th>عملیات</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% with 0 as count %}
+      {% for teacher in all_teachers %}
+        {% if teacher.id in voted_teacher_ids %}
+          {% with count|add:"1" as count %}
+          <tr>
+            <td>{{ teacher.name }}</td>
+            <td>
+              <form method="post" style="display:inline;">
+                {% csrf_token %}
+                <button type="submit" name="delete_vote" value="{{ teacher.id }}" class="btn btn-sm btn-danger">حذف رأی</button>
+              </form>
+            </td>
+          </tr>
+          {% endwith %}
+        {% endif %}
+      {% empty %}
+        <tr><td colspan="4">شما هنوز به هیچ معلمی رأی نداده‌اید.</td></tr>
+      {% endfor %}
+      {% endwith %}
+    </tbody>
+  </table>
+</div>
+
+
+
+    <!-- دکمه رأی دادن -->
+    <button id="ra" class="vote-btn" style="margin-top: 4rem;" onclick="openVoteModal()">🗳️ رأی دادن به معلم</button>
+
+    <!-- مودال رأی -->
+    <div id="voteModal" class="modal-vote" style="display:none;" dir="rtl">
+      <div class="modal-content">
+        <span class="close" onclick="closeVoteModal()">&times;</span>
+        <form id="voteForm" method="post" action="{% url 'home' %}">
+          {% csrf_token %}
+          <label for="teacherSelect">انتخاب معلم:</label>
+          <select id="teacherSelect" name="teachers" multiple required>
+            {% for teacher in teachers %}
+              <option value="{{ teacher.id }}">{{ teacher.name }}</option>
+            {% endfor %}
+          </select>
+          <p><b>نکته:</b> حداکثر سه رأی</p>
+          <p>شما تا کنون <b>{{ votes_count }}</b> رأی داده‌اید. باقی‌مانده: <b>{{ votes_left }}</b></p>
+          <button class="vote-btn-hop" type="submit">ثبت رأی</button>
+        </form>
       </div>
-      <br>
-      <br>
-    <!-- دکمه برای باز کردن مودال -->
+    </div>
+
+    <br><br>
+
+    <!-- دکمه شرایط رأی‌دهی -->
     <button type="button" class="btn btn-primary rounded-pill px-4 py-2 shadow" data-bs-toggle="modal" data-bs-target="#conditionsModal">
       📜 شرایط رأی‌دهی
     </button>
 
-    <!-- مودال شرایط رأی‌دهی راست‌چین کامل -->
+    <!-- مودال شرایط رأی‌دهی -->
     <div class="modal fade" id="conditionsModal" tabindex="-1" aria-labelledby="conditionsModalLabel" aria-hidden="true" dir="rtl">
       <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content rounded-4 border-0 bg-dark text-white shadow-lg custom-dark-modal">
-
           <div class="modal-header border-0 rounded-top-4" style="background: linear-gradient(90deg, #222, #111);">
-            <h5 class="modal-title fw-bold" id="conditionsModalLabel" style="text-align: right;">
-              🧾 شرایط رأی‌دهی به معلمان برتر
-            </h5>
+            <h5 class="modal-title fw-bold" id="conditionsModalLabel">🧾 شرایط رأی‌دهی به معلمان برتر</h5>
             <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="بستن"></button>
           </div>
-
-          <div class="modal-body px-4 py-3" style="font-family: 'Vazirmatn', sans-serif; max-height: 80vh; overflow-y: auto; text-align: right;">
+          <div class="modal-body px-4 py-3" style="font-family: 'Vazirmatn', sans-serif; max-height: 80vh; overflow-y: auto;">
             <p class="mb-3">
-              این بخش با هدف <strong class="text-warning">ارزیابی محبوبیت معلمان</strong> از نگاه دانش‌آموزان طراحی شده است.
+              این بخش با هدف <strong class="text-warning">ارزیابی محبوبیت معلمان</strong> طراحی شده است.
               <br>تمامی آرا در فضایی محترمانه و سازنده جمع‌آوری می‌شوند.
             </p>
-
-            <ul class="list-group list-group-flush mb-3" style="text-align: right;">
-              <li class="list-group-item bg-transparent text-light border-0" style="text-align: right;"><i class="bi bi-shield-check text-success ms-2"></i> این رأی‌گیری <strong>هیچ‌گونه جنبه توهین‌آمیز یا تمسخرآمیز</strong> ندارد.</li>
-              <li class="list-group-item bg-transparent text-light border-0" style="text-align: right;"><i class="bi bi-star-fill text-warning ms-2"></i> هدف، <strong>تشویق معلمان پرتلاش</strong> و الهام‌بخش است.</li>
-              <li class="list-group-item bg-transparent text-light border-0" style="text-align: right;"><i class="bi bi-123 text-info ms-2"></i> هر کاربر فقط می‌تواند <strong>حداکثر ۳ رأی</strong> ثبت کند.</li>
-              <li class="list-group-item bg-transparent text-light border-0" style="text-align: right;"><i class="bi bi-graph-up-arrow text-primary ms-2"></i> این نتایج صرفاً <strong>آماری و غیررسمی</strong> هستند.</li>
+            <ul class="list-group list-group-flush mb-3">
+              <li class="list-group-item bg-transparent text-light border-0"><i class="bi bi-shield-check text-success ms-2"></i> این رأی‌گیری <strong>هیچ‌گونه جنبه توهین‌آمیز یا تمسخرآمیز</strong> ندارد.</li>
+              <li class="list-group-item bg-transparent text-light border-0"><i class="bi bi-star-fill text-warning ms-2"></i> هدف، <strong>تشویق معلمان پرتلاش</strong> و الهام‌بخش است.</li>
+              <li class="list-group-item bg-transparent text-light border-0"><i class="bi bi-123 text-info ms-2"></i> هر کاربر فقط می‌تواند <strong>حداکثر ۳ رأی</strong> ثبت کند.</li>
+              <li class="list-group-item bg-transparent text-light border-0"><i class="bi bi-graph-up-arrow text-primary ms-2"></i> این نتایج صرفاً <strong>آماری و غیررسمی</strong> هستند.</li>
             </ul>
-
-            <div class="text-white text-light small" style="text-align: right;color: white">
+            <div class="text-white text-light small">
               🌟 با رأی‌دادن آگاهانه، فضای انگیزشی برای معلمان خلق کنیم.
             </div>
           </div>
-
           <div class="modal-footer border-0 justify-content-between px-4 py-3">
             <span class="text-secondary small">سامانه رأی‌دهی معلمان - نسخه آزمایشی</span>
             <button type="button" class="btn btn-outline-light rounded-pill px-4" data-bs-dismiss="modal">بستن</button>
@@ -916,46 +965,72 @@
       </div>
     </div>
 
+    <footer>
+      <p>© 2025 سامانه رأی گیری | طراحی شده با ❤️ و django, HTML, CSS</p>
+    </footer>
+  </div>
+
+<head>
+  <style>
+    .hidden { display: none; }
+    #countdown {
+      font-size: 3rem;
+      color: #ff0;
+      margin-bottom: 1rem;
+      font-family: monospace;
+    }
+    #countdown.ending {
+      color: red;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
 
 
+<script>
+  // زمان پایان از سرور (مثلاً '2025-05-24 23:59:59')
+  const endTime = new Date("{{ end_time|date:'Y-m-d H:i:s' }}").getTime();
 
+  function updateCountdown() {
+    const now = Date.now();
+    let remaining = endTime - now;
 
+    const countdownEl = document.getElementById("countdown");
 
+    if (remaining > 0) {
+      const hours = Math.floor(remaining / (1000 * 60 * 60));
+      const minutes = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((remaining % (1000 * 60)) / 1000);
 
-      <footer>
-    <p>© 2025 سامانه آموزش | طراحی شده با ❤️ و django, HTML, CSS</p>
-  </footer>
-</div>
+      // تغییر رنگ در 10 ثانیه آخر
+      if (remaining < 10000) {
+        countdownEl.classList.add("ending");
+      }
 
-    <script>
-      // زمان پایان از سرور (Django)
-      const endTime = new Date("{{ end_time|date:'Y-m-d H:i:s' }}").getTime();
-      const now = new Date("{{ now|date:'Y-m-d H:i:s' }}").getTime();
-      let countdownSeconds = Math.floor((endTime - now) / 1000);
+      // نمایش دقیق ساعت:دقیقه:ثانیه
+      countdownEl.textContent = `${hours.toString().padStart(2,'0')}:${minutes.toString().padStart(2,'0')}:${seconds.toString().padStart(2,'0')}`;
 
-      const countdownEl = document.getElementById("countdown");
+      // آپدیت هر 200 میلی‌ثانیه برای دقت بالا
+      setTimeout(updateCountdown, 200);
+    } else {
+      countdownEl.textContent = "⏰ زمان رأی‌گیری به پایان رسید!";
+      document.querySelectorAll(".vote-count").forEach(el => el.classList.remove("hidden"));
+      document.getElementById("teacherTable").classList.remove("hidden");
       const voteBtn = document.getElementById("ra");
+      if (voteBtn) {
+        voteBtn.disabled = true;
+        voteBtn.textContent = "رأی‌گیری پایان یافت";
+      }
+    }
+  }
 
-      const timer = setInterval(() => {
-        if (countdownSeconds >= 0) {
-          const minutes = Math.floor(countdownSeconds / 60);
-          const seconds = countdownSeconds % 60;
-          countdownEl.textContent = `زمان باقی‌مانده: ${minutes}:${seconds.toString().padStart(2, '0')}`;
-          countdownSeconds--;
-        } else {
-          clearInterval(timer);
-          countdownEl.textContent = "زمان رأی‌گیری به پایان رسید! 🎉";
-          document.querySelectorAll(".vote-count").forEach(el => el.classList.remove("hidden"));
-          document.getElementById("teacherTable").classList.remove("hidden");
-          voteBtn.disabled = true;
-          voteBtn.textContent = "رأی‌گیری پایان یافت";
-        }
-      }, 1000);
-    </script>
+  // شروع تایمر
+  updateCountdown();
+</script>
 
-
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
   <script>
     function openVoteModal() {
       document.getElementById("voteModal").style.display = "block";
@@ -991,7 +1066,7 @@
 
       // همچنین می‌توان یک پیام تبریک هم نمایش داد (اختیاری)
       Toastify({
-        text: "رأی شما ثبت شد! 🎉",
+        text: "معلم ات رو انتخاب کن 🎉",
         duration: 3000,
         gravity: "top",
         position: 'center',
