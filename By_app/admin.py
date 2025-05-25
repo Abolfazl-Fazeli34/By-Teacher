@@ -53,3 +53,8 @@ class TeacherVoteAdmin(admin.ModelAdmin):
                 from django.core.exceptions import ValidationError
                 raise ValidationError("This user has already voted for this teacher.")
         super().save_model(request, obj, form, change)
+
+
+from .models import TimerSetting
+
+admin.site.register(TimerSetting)

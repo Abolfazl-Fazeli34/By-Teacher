@@ -45,3 +45,10 @@ class TeacherVote(models.Model):
 
 
 
+from django.db import models
+
+class TimerSetting(models.Model):
+    end_time = models.DateTimeField("زمان پایان رأی‌گیری")
+
+    def __str__(self):
+        return f"زمان پایان: {self.end_time}"

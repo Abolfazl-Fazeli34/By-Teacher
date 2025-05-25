@@ -124,19 +124,31 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.contrib.auth import logout
-from .models import Teacher, TeacherVote
+from django.utils import timezone
+from .models import Teacher, TeacherVote, TimerSetting
 from .forms import VoteForm
 
 @login_required
 def vote_teachers_view(request):
     user = request.user
 
+    # خواندن زمان پایان از مدل TimerSetting
+    timer_setting = TimerSetting.objects.first()
+    end_time = timer_setting.end_time if timer_setting else None
+    now = timezone.now()
+
+    # بررسی پایان رأی‌گیری
+    voting_active = end_time and now < end_time
+
     if request.method == 'POST':
-        # اگر درخواست لاگ‌اوت بود
         if 'logout' in request.POST:
             logout(request)
             messages.success(request, "شما با موفقیت خارج شدید.")
-            return redirect('login')  # یا هر صفحه دلخواه
+            return redirect('login')
+
+        if not voting_active:
+            messages.error(request, "زمان رأی‌گیری به پایان رسیده است.")
+            return redirect('home')
 
         if 'delete_vote' in request.POST:
             teacher_id = request.POST.get('delete_vote')
@@ -179,6 +191,7 @@ def vote_teachers_view(request):
     votes_left = max(3 - votes_count, 0)
     top_teachers = Teacher.objects.order_by('-vote')[:3]
     all_teachers = Teacher.objects.order_by('-vote')
+
     context = {
         'form': form,
         'user_votes': user_votes,
@@ -188,6 +201,9 @@ def vote_teachers_view(request):
         'teachers': Teacher.objects.all(),
         'top_teachers': top_teachers,
         'all_teachers': all_teachers,
+        'end_time': end_time,
+        'now': now,
+        'voting_active': voting_active,
     }
     return render(request, 'home.html', context)
 
